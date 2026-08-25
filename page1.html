@@ -1,29 +1,88 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <script async src="https://api.beta.glia.com/salemove_integration.js"></script>
-    <title>Page 1 - CE Testing Site</title>
-    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
-    <style>
-      h1 {color:#7C19DD; font-family:roboto;}
-      img {width:50%;}
-      nav {text-align:center; margin: 20px 0; font-family: roboto, sans-serif;}
-      nav a {margin: 0 10px; text-decoration: none; color: #333;}
-      nav a:hover {color: #7C19DD;}
-    </style>
-  </head>
+!-- ========================================== -->
+<!--   Glia Custom "Let's Chat" Launcher Box    -->
+<!-- ========================================== -->
 
-  <body>
-    <nav>
-      <a href="index.html">Main Page</a> |
-      <a href="page1.html">Page 1</a> |
-      <a href="page2.html">Page 2</a>
-    </nav>
+<!-- 1. HTML: The Red Button Element -->
+<button id="custom-glia-launcher" class="glia-custom-btn" data-sm-show-media-selection-on="click">
+  <svg class="glia-btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+  </svg>
+  <span class="glia-btn-text">Let's Chat</span>
+</button>
 
-    <center>
-      <img src="images/Full LOGO_black.png" alt="CE logo" style="width:750px">
-    </center>
+<!-- 2. CSS: Styles for the Rectangular Box and SVG Icon -->
+<style>
+  /* Style for Custom Glia Button Box */
+  .glia-custom-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Space between icon and text */
+    background-color: #AB0520; /* Brand Red */
+    color: #FFFFFF; /* White Text */
+    border: none;
+    border-radius: 4px; /* Crisp rectangular shape with soft corners */
+    padding: 12px 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    
+    /* Sticky position on the bottom right corner of the browser */
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999999; /* Keeps the launcher on top of other content */
+  }
 
-    <h1 style="text-align:center;">Welcome to Page 1!</h1>
-  </body>
-</html>
+  /* Chat Icon Size and Color */
+  .glia-btn-icon {
+    width: 20px;
+    height: 20px;
+    fill: #FFFFFF; /* White Icon */
+  }
+
+  /* Hover & Click States */
+  .glia-custom-btn:hover {
+    background-color: #90041a; /* Marginally darker red on hover */
+  }
+
+  .glia-custom-btn:active {
+    transform: scale(0.97); /* Subtle press effect when clicked */
+  }
+</style>
+
+<!-- 3. JavaScript: SDK Integration & Operator Queue Check -->
+<script>
+  (function () {
+    // 1. Wait for the Glia JS SDK to load on your site
+    sm.getApi({ version: 'v1' }).then(function (glia) {
+      
+      const launcherBtn = document.getElementById('custom-glia-launcher');
+      if (!launcherBtn) return;
+
+      // 2. Hide launcher initially until we verify operators are online
+      launcherBtn.style.display = 'none';
+
+      // 3. Retrieve queue statuses on page load
+      glia.getQueues().then(function (queues) {
+        const queueIds = queues.map(function (q) { return q.id; });
+        
+        // Subscribe to live queue changes (staff logging in/out)
+        glia.subscribeToQueueStateUpdates(queueIds, function () {
+          glia.getQueues().then(function (latestQueues) {
+            // Check if at least one queue is unstaffed/closed vs open
+            const isAnyQueueOpen = latestQueues.some(function (q) {
+              return q.state && q.state.status === q.state.STATUSES.OPEN;
+            });
+            
+            // Show the button if an operator is available, otherwise hide it
+            launcherBtn.style.display = isAnyQueueOpen ? 'inline-flex' : 'none';
+          });
+        });
+      });
+    });
+  })();
+</script>
