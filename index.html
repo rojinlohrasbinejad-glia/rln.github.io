@@ -1,38 +1,61 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <script async src="https://api.beta.glia.com/salemove_integration.js"></script>
     <title>Main Page - CE Testing Site</title>
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
     <style>
-      h1 {color:#7C19DD; font-family:roboto;}
-      img {width:50%;}
-      nav {text-align:center; margin: 20px 0; font-family: roboto, sans-serif;}
-      nav a {margin: 0 10px; text-decoration: none; color: #333;}
-      nav a:hover {color: #7C19DD;}
+        h1 {color:#7C19DD; font-family:roboto;}
+        img {width:50%;}
+        nav {text-align:center; margin: 20px 0; font-family: roboto, sans-serif;}
+        nav a {margin: 0 10px; text-decoration: none; color: #333;}
+        nav a:hover {color: #7C19DD;}
+        
+        /* New styling for the custom bubble */
+        .bubble {
+            background-color: red;
+            color: #FFFFFF;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            font-family: roboto, sans-serif;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        .bubble svg {
+            margin-right: 8px;
+            fill: #FFFFFF;
+            width: 20px;
+            height: 20px;
+        }
     </style>
-  </head>
-
-  <body>
+</head>
+<body>
     <nav>
-      <a href="index.html">Main Page</a> |
-      <a href="page1.html">Page 1</a> |
-      <a href="page2.html">Page 2</a>
+        <a href="index.html">Main Page</a> | 
+        <a href="page1.html">Page 1</a> | 
+        <a href="page2.html">Page 2</a>
     </nav>
-  
     <center>
+        <img class="abc" src="images/Full LOGO_black.png" alt="CE logo" style="width:750px">
+        <br><br>
+        
+        <!-- Updated Chat Bubble Element -->
+        <button id="bubble" class="bubble" type="button">
+            <!-- SVG Chat Icon -->
+            <svg viewBox="0 0 24 24">
+                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"></path>
+            </svg>
+            Chat
+        </button>
 
-      <img class= "abc" src="images/Full LOGO_black.png" alt="CE logo" style="width:750px">
-      <button id="chat" type="button">Chat</button>
-      <button class="media_button" medium="voice"id  ="voice">Voice</button>
-      <button class="media_button" medium="video" id="video">
-      video call
-    </button>
-      
+        <button class="media_button" medium="voice" id="voice">Voice</button>
+        <button class="media_button" medium="video" id="video"> video call </button>
     </center>
-    
     <h1 id="glia-test-title">glia test</h1>
-
     <h1 style="text-align:center;">Welcome to our main testing site!</h1>
-  </body>
+</body>
 </html>
