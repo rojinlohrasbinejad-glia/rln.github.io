@@ -11,9 +11,8 @@
         nav a {margin: 0 10px; text-decoration: none; color: #333;}
         nav a:hover {color: #7C19DD;}
         
-        /* New styling for the custom bubble */
-        .bubble {
-            background-color: red;
+        .bubble, .media_button {
+            background-color: #7C19DD;
             color: #FFFFFF;
             padding: 10px 20px;
             border-radius: 8px;
@@ -23,6 +22,19 @@
             font-family: roboto, sans-serif;
             font-size: 16px;
             cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.2s ease, opacity 0.2s ease;
+        }
+
+        .bubble:hover, .media_button:hover:not(:disabled) {
+            background-color: #5B10A7;
+        }
+
+        .bubble:disabled, .media_button:disabled {
+            background-color: #cccccc !important;
+            color: #666666 !important;
+            cursor: not-allowed;
+            opacity: 0.6;
         }
         
         .bubble svg {
@@ -43,19 +55,83 @@
         <img class="abc" src="images/Full LOGO_black.png" alt="CE logo" style="width:750px">
         <br><br>
         
-        <!-- Updated Chat Bubble Element -->
-        <button id="bubble" class="bubble" type="button">
-            <!-- SVG Chat Icon -->
+        <!-- Custom Chat GVA Button -->
+        <button id="chat-gva-btn" class="bubble" type="button" disabled>
             <svg viewBox="0 0 24 24">
                 <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"></path>
             </svg>
-            Chat
+            Chat GVA (Offline)
         </button>
 
-        <button class="media_button" medium="voice" id="voice">Voice</button>
-        <button class="media_button" medium="video" id="video"> video call </button>
+        <!-- Custom Phone GVA Button -->
+        <button id="phone-gva-btn" class="media_button" disabled>Phone GVA (Offline)</button>
     </center>
     <h1 id="glia-test-title">glia test</h1>
     <h1 style="text-align:center;">Welcome to our main testing site!</h1>
+
+    <script>
+        const CHAT_QUEUE_NAME = "gva q";
+        const PHONE_QUEUE_NAME = "phone gva q";
+
+        let chatQueueId = null;
+        let phoneQueueId = null;
+
+        const chatButton = document.getElementById('chat-gva-btn');
+        const phoneButton = document.getElementById('phone-gva-btn');
+
+        function updateButtonState(button, label, isAvailable) {
+            button.disabled = !isAvailable;
+            button.innerHTML = isAvailable ? label : `${label} (Offline)`;
+        }
+
+        sm.getApi({ version: 'v1' }).then(function(glia) {
+            console.log("Glia JS SDK successfully loaded.");
+
+            glia.getQueues().then(function(queues) {
+                const chatQueueObj = queues.find(q => q.name === CHAT_QUEUE_NAME);
+                const phoneQueueObj = queues.find(q => q.name === PHONE_QUEUE_NAME);
+
+                if (chatQueueObj) {
+                    chatQueueId = chatQueueObj.id;
+                    glia.subscribeToQueueStateUpdates([chatQueueId], function(queue) {
+                        const isChatOpen = queue.state.status === queue.state.STATUSES.OPEN;
+                        updateButtonState(chatButton, '<svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"></path></svg> Chat GVA', isChatOpen);
+                    });
+                } else {
+                    console.error(`Glia error: No queue found matching the name "${CHAT_QUEUE_NAME}".`);
+                }
+
+                if (phoneQueueObj) {
+                    phoneQueueId = phoneQueueObj.id;
+                    glia.subscribeToQueueStateUpdates([phoneQueueId], function(queue) {
+                        const isPhoneOpen = queue.state.status === queue.state.STATUSES.OPEN;
+                        updateButtonState(phoneButton, 'Phone GVA', isPhoneOpen);
+                    });
+                } else {
+                    console.error(`Glia error: No queue found matching the name "${PHONE_QUEUE_NAME}".`);
+                }
+
+            }).catch(function(err) {
+                console.error("Glia error fetching queues:", err);
+            });
+
+
+            chatButton.addEventListener('click', function() {
+                if (!chatQueueId) return alert("Chat GVA Queue ID could not be found.");
+                
+                glia.queueForEngagement('text', { queueId: chatQueueId })
+                    .then(() => console.log("Enqueued for Chat GVA"))
+                    .catch((err) => alert("Failed to enqueue: " + err));
+            });
+
+            phoneButton.addEventListener('click', function() {
+                if (!phoneQueueId) return alert("Phone GVA Queue ID could not be found.");
+                
+                glia.queueForEngagement('audio', { queueId: phoneQueueId })
+                    .then(() => console.log("Enqueued for Phone GVA"))
+                    .catch((err) => alert("Failed to enqueue: " + err));
+            });
+        });
+    </script>
 </body>
 </html>
