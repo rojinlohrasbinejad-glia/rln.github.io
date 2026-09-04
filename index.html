@@ -52,8 +52,25 @@
             Chat
         </button>
 
-        <button class="media_button" medium="voice" id="voice">Voice</button>
-        <button class="media_button" medium="video" id="video"> video call </button>
+        <div>
+  <div class="instructions"></div>
+  <button class="cancel">Leave queue</button>
+  <div class="queue" queue_name="Sales">
+    <span>Interested in buying?</span>
+    <button class="media_button" medium="text">Chat using your browser</button>
+    <button class="media_button" medium="audio">Speak using your microphone</button>
+    <button class="media_button" medium="phone">Speak using your phone</button>
+    <button class="media_button" medium="video">Speak using your camera</button>
+  </div>
+  <div class="queue" queue_name="Service">
+    <span>Need help with the product?</span>
+    <button class="media_button" medium="text">Chat using your browser</button>
+    <button class="media_button" medium="audio">Speak using your microphone</button>
+    <button class="media_button" medium="phone">Speak using your phone</button>
+    <button class="media_button" medium="video">Speak using your camera</button>
+  </div>
+</div>
+
     </center>
     <h1 id="glia-test-title">glia test</h1>
     <h1 style="text-align:center;">Welcome to our main testing site!</h1>
