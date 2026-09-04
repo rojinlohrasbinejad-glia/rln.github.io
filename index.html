@@ -56,4 +56,94 @@
         <h1 id="glia-test-title">glia test</h1>
         <h1 style="text-align:center;">Welcome to our main testing site!</h1>
     </body>
+    <script>
+    // --- UI Selectors ---
+    function findQueueElement(queueName) {
+        return document.querySelector("div.queue[queue_name='" + queueName + "']");
+    }
+    function findAllQueueElements() {
+        return document.querySelectorAll('div.queue');
+    }
+    function findAllQueueMediaButtons() {
+        return document.querySelectorAll('div.queue > button.media_button');
+    }
+    function findMediaButtonsForQueue(queueElement) {
+        return queueElement.querySelectorAll('button.media_button');
+    }
+    function getMediaButtonQueueName(button) {
+        return button.parentElement.getAttribute('queue_name');
+    }
+    function getButtonMedium(button) {
+        return button.getAttribute('medium');
+    }
+    // --- UI Transitions ---
+    function showCanQueue(queueElement, queueMedias) {
+        queueElement.style['text-decoration'] = 'none';
+        updateQueueAvailableMedia(queueElement, queueMedias);
+    }
+    function showCannotQueue(queueElement) {
+        queueElement.style['text-decoration'] = 'line-through';
+        updateQueueAvailableMedia(queueElement, []);
+    }
+    function showCannotQueueAnywhere() {
+        findAllQueueElements().forEach(showCannotQueue);
+    }
+    function updateQueueAvailableMedia(queueElement, medias) {
+        findMediaButtonsForQueue(queueElement).forEach(function(button) {
+        var mediaUnavailable = medias.indexOf(getButtonMedium(button)) === -1;
+        button.disabled = mediaUnavailable;
+        });
+    }
+    // --- Glia SDK Integration ---
+    var queueTicket;
+    function listenForQueueButtonClicks(salemove, queues) {
+        findAllQueueMediaButtons().forEach(function(mediaButton) {
+        var buttonQueueName = getMediaButtonQueueName(mediaButton);
+        var buttonMedium = getButtonMedium(mediaButton);
+        var queueId = queues
+            .filter(function(queue) { return queue.name === buttonQueueName; })
+            .map(function(queue) { return queue.id; })[0];
+        if (queueId === undefined) {
+            console.warn('Queue not found in Glia for button: ' + buttonQueueName);
+            return;
+        }
+        mediaButton.addEventListener('click', function() {
+            salemove
+            .queueForEngagement(buttonMedium, { queueId: queueId })
+            .catch(function(err) { console.error('Failed to queue:', err); });
+        });
+        });
+    }
+    function onQueueState(queue) {
+        if (findQueueElement(queue.name) === null) return;
+        if (queue.state.status === queue.state.STATUSES.OPEN) {
+        showCanQueue(findQueueElement(queue.name), queue.state.medias);
+        } else {
+        showCannotQueue(findQueueElement(queue.name));
+        }
+    }
+    function onVisitorQueueingState(queuingState) {
+        if (queuingState.state === queuingState.QUEUE_STATES.QUEUED) {
+        queueTicket = queuingState.ticket;
+        console.log('Visitor is queued. Ticket:', queueTicket);
+        } else if (queuingState.state === queuingState.QUEUE_STATES.CANNOT_QUEUE) {
+        queueTicket = null;
+        } else {
+        queueTicket = null;
+        }
+    }
+    // Initial state: disable all buttons until queue state is known
+    showCannotQueueAnywhere();
+    sm.getApi({ version: 'v1' }).then(function(salemove) {
+        salemove.addEventListener(
+        salemove.EVENTS.QUEUE_STATE_UPDATE,
+        onVisitorQueueingState
+        );
+        salemove.getQueues().then(function(queues) {
+        listenForQueueButtonClicks(salemove, queues);
+        var queueIds = queues.map(function(queue) { return queue.id; });
+        salemove.subscribeToQueueStateUpdates(queueIds, onQueueState);
+        });
+    });
+    </script>
 </html>
