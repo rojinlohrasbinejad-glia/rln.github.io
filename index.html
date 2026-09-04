@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <!-- 1. CORRECTED: Script loads from api.glia.com and includes site_id query parameter -->
-    <script async src="https://api.glia.com/salemove_integration.js"></script>
+    <!-- 1. CORRECTED: Removed 'async' to fix the "sm is not defined" error, and added the site_id parameter -->
+    <script src="https://api.glia.com/salemove_integration.js?site_id=0ca7b220-b036-43d9-8c38-4f90ceedb2ff"></script>
+    
     <title>Main Page - CE Testing Site</title>
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
     <style>
@@ -82,12 +83,12 @@
     <center>
         <div>
             <!-- Queue Cards -->
-            <div id ="sales_queue" class="queue" queue_name="Sales">
+            <div id="sales_queue" class="queue" queue_name="Sales">
                 <span>Interested in buying? (Sales)</span>
                 <button class="media_button" medium="text" disabled>Chat</button>
                 <button class="media_button" medium="audio" disabled>Speak</button>
             </div>
-            <div id ="service_queue" class="queue" queue_name="Service">
+            <div id="service_queue" class="queue" queue_name="Service">
                 <span>Need help with the product? (Service)</span>
                 <button class="media_button" medium="text" disabled>Chat</button>
             </div>
@@ -96,7 +97,7 @@
     <h1 id="glia-test-title">glia test</h1>
     <h1 style="text-align:center;">Welcome to our main testing site!</h1>
 
-    <!-- 2. ADDED: Integration Logic linking DOM Attributes to Glia APIs -->
+    <!-- 2. Integration Logic linking DOM Attributes to Glia APIs -->
     <script>
         // Initialize Glia Visitor JS SDK
         sm.getApi({ version: 'v1' }).then(function(glia) {
@@ -119,7 +120,7 @@
                         const queueId = matchingQueue.id;
                         const buttons = queueDiv.querySelectorAll('.media_button');
                         
-                        // Subscribe to live updates for this queue ID [4]
+                        // Subscribe to live updates for this queue ID
                         glia.subscribeToQueueStateUpdates([queueId], function(updatedQueue) {
                             const isOpen = updatedQueue.state.status === updatedQueue.state.STATUSES.OPEN;
                             console.log(`Queue "${queueName}" status: ${updatedQueue.state.status}`);
@@ -130,10 +131,10 @@
                             });
                         });
                         
-                        // Bind click events to programmatic enqueuing [4]
+                        // Bind click events to programmatic enqueuing
                         buttons.forEach(button => {
                             button.addEventListener('click', function() {
-                                const medium = button.getAttribute('medium'); // "text" or "audio" [4]
+                                const medium = button.getAttribute('medium'); // "text" or "audio"
                                 console.log(`Requesting ${medium} engagement in ${queueName} (${queueId})...`);
                                 
                                 glia.queueForEngagement(medium, { queueId: queueId })
