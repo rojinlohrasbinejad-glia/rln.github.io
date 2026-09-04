@@ -1,149 +1,157 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <script async src="https://app.glia.com/salemove_integration.js"></script>
-        <title>Main Page - CE Testing Site</title>
-        <link rel="icon" type="image/x-icon" href="images/favicon.ico">
-        <style>
-            h1 {color:#7C19DD; font-family:roboto;}
-            img {width:50%;}
-            nav {text-align:center; margin: 20px 0; font-family: roboto, sans-serif;}
-            nav a {margin: 0 10px; text-decoration: none; color: #333;}
-            nav a:hover {color: #7C19DD;}
-            
-            /* New styling for the custom bubble */
-            .bubble {
-                background-color: red;
-                color: #FFFFFF;
-                padding: 10px 20px;
-                border-radius: 8px;
-                border: none;
-                display: inline-flex;
-                align-items: center;
-                font-family: roboto, sans-serif;
-                font-size: 16px;
-                cursor: pointer;
-            }
-            
-            .bubble svg {
-                margin-right: 8px;
-                fill: #FFFFFF;
-                width: 20px;
-                height: 20px;
-            }
-        </style>
-    </head>
-    <body>
-        <nav>
-            <a href="index.html">Main Page</a> | 
-            <a href="page1.html">Page 1</a> | 
-            <a href="page2.html">Page 2</a>
-        </nav>
-        <center>
-            <div>
-                <div class="queue" queue_name="Sales">
-                    <span>Interested in buying?</span>
-                    <button class="media_button" medium="text">Chat</button>
-                    <button class="media_button" medium="audio">Speak</button>
-                </div>
-                <div class="queue" queue_name="Service">
-                    <span>Need help with the product?</span>
-                    <button class="media_button" medium="text">Chat</button>
-                </div>
-            </div>
+<head>
+    <!-- 1. CORRECTED: Script loads from api.glia.com and includes site_id query parameter -->
+    <script async src="https://api.glia.com/salemove_integration.js?site_id=0ca7b220-b036-43d9-8c38-4f90ceedb2ff"></script>
+    <title>Main Page - CE Testing Site</title>
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <style>
+        h1 {color:#7C19DD; font-family:roboto;}
+        img {width:50%;}
+        nav {text-align:center; margin: 20px 0; font-family: roboto, sans-serif;}
+        nav a {margin: 0 10px; text-decoration: none; color: #333;}
+        nav a:hover {color: #7C19DD;}
+        
+        /* New styling for the custom bubble */
+        .bubble {
+            background-color: red;
+            color: #FFFFFF;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            font-family: roboto, sans-serif;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        .bubble svg {
+            margin-right: 8px;
+            fill: #FFFFFF;
+            width: 20px;
+            height: 20px;
+        }
 
-        </center>
-        <h1 id="glia-test-title">glia test</h1>
-        <h1 style="text-align:center;">Welcome to our main testing site!</h1>
-    </body>
+        /* Added Styling for Media Buttons and States */
+        .queue {
+            border: 1px solid #E5E7EB;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px;
+            max-width: 400px;
+            font-family: 'Roboto', sans-serif;
+            text-align: left;
+        }
+
+        .queue span {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .media_button {
+            background-color: #7C19DD;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 5px;
+            transition: background-color 0.2s;
+        }
+
+        .media_button:hover:not(:disabled) {
+            background-color: #5B10A7;
+        }
+
+        .media_button:disabled {
+            background-color: #cccccc !important;
+            color: #666666 !important;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">Main Page</a> | 
+        <a href="page1.html">Page 1</a> | 
+        <a href="page2.html">Page 2</a>
+    </nav>
+    <center>
+        <div>
+            <!-- Queue Cards -->
+            <div class="queue" queue_name="Sales">
+                <span>Interested in buying? (Sales)</span>
+                <button class="media_button" medium="text" disabled>Chat</button>
+                <button class="media_button" medium="audio" disabled>Speak</button>
+            </div>
+            <div class="queue" queue_name="Service">
+                <span>Need help with the product? (Service)</span>
+                <button class="media_button" medium="text" disabled>Chat</button>
+            </div>
+        </div>
+    </center>
+    <h1 id="glia-test-title">glia test</h1>
+    <h1 style="text-align:center;">Welcome to our main testing site!</h1>
+
+    <!-- 2. ADDED: Integration Logic linking DOM Attributes to Glia APIs -->
     <script>
-    // --- UI Selectors ---
-    function findQueueElement(queueName) {
-        return document.querySelector("div.queue[queue_name='" + queueName + "']");
-    }
-    function findAllQueueElements() {
-        return document.querySelectorAll('div.queue');
-    }
-    function findAllQueueMediaButtons() {
-        return document.querySelectorAll('div.queue > button.media_button');
-    }
-    function findMediaButtonsForQueue(queueElement) {
-        return queueElement.querySelectorAll('button.media_button');
-    }
-    function getMediaButtonQueueName(button) {
-        return button.parentElement.getAttribute('queue_name');
-    }
-    function getButtonMedium(button) {
-        return button.getAttribute('medium');
-    }
-    // --- UI Transitions ---
-    function showCanQueue(queueElement, queueMedias) {
-        queueElement.style['text-decoration'] = 'none';
-        updateQueueAvailableMedia(queueElement, queueMedias);
-    }
-    function showCannotQueue(queueElement) {
-        queueElement.style['text-decoration'] = 'line-through';
-        updateQueueAvailableMedia(queueElement, []);
-    }
-    function showCannotQueueAnywhere() {
-        findAllQueueElements().forEach(showCannotQueue);
-    }
-    function updateQueueAvailableMedia(queueElement, medias) {
-        findMediaButtonsForQueue(queueElement).forEach(function(button) {
-        var mediaUnavailable = medias.indexOf(getButtonMedium(button)) === -1;
-        button.disabled = mediaUnavailable;
+        // Initialize Glia Visitor JS SDK
+        sm.getApi({ version: 'v1' }).then(function(glia) {
+            console.log("Glia SDK successfully loaded on testing page.");
+
+            // 1. Fetch available queues from the backend
+            glia.getQueues().then(function(queues) {
+                console.log("Fetched site queues: ", queues);
+                
+                // Query all queue divs on your page
+                const queueElements = document.querySelectorAll('.queue');
+                
+                queueElements.forEach(queueDiv => {
+                    const queueName = queueDiv.getAttribute('queue_name');
+                    
+                    // Match HTML "queue_name" attribute with the official Glia Hub Queue Name
+                    const matchingQueue = queues.find(q => q.name === queueName);
+                    
+                    if (matchingQueue) {
+                        const queueId = matchingQueue.id;
+                        const buttons = queueDiv.querySelectorAll('.media_button');
+                        
+                        // Subscribe to live updates for this queue ID [4]
+                        glia.subscribeToQueueStateUpdates([queueId], function(updatedQueue) {
+                            const isOpen = updatedQueue.state.status === updatedQueue.state.STATUSES.OPEN;
+                            console.log(`Queue "${queueName}" status: ${updatedQueue.state.status}`);
+                            
+                            // Enable buttons only if the queue is OPEN and staffed
+                            buttons.forEach(button => {
+                                button.disabled = !isOpen;
+                            });
+                        });
+                        
+                        // Bind click events to programmatic enqueuing [4]
+                        buttons.forEach(button => {
+                            button.addEventListener('click', function() {
+                                const medium = button.getAttribute('medium'); // "text" or "audio" [4]
+                                console.log(`Requesting ${medium} engagement in ${queueName} (${queueId})...`);
+                                
+                                glia.queueForEngagement(medium, { queueId: queueId })
+                                    .then(() => console.log(`Enqueued successfully in ${queueName}`))
+                                    .catch(err => alert(`Enqueuing failed: ${err}`));
+                            });
+                        });
+                        
+                    } else {
+                        console.error(`Glia Error: Could not locate a queue in Glia Hub matching the name "${queueName}". Buttons will remain disabled.`);
+                    }
+                });
+            }).catch(err => {
+                console.error("Glia Error fetching queues list:", err);
+            });
+        }).catch(err => {
+            console.error("Glia SDK failed to initialize:", err);
         });
-    }
-    // --- Glia SDK Integration ---
-    var queueTicket;
-    function listenForQueueButtonClicks(salemove, queues) {
-        findAllQueueMediaButtons().forEach(function(mediaButton) {
-        var buttonQueueName = getMediaButtonQueueName(mediaButton);
-        var buttonMedium = getButtonMedium(mediaButton);
-        var queueId = queues
-            .filter(function(queue) { return queue.name === buttonQueueName; })
-            .map(function(queue) { return queue.id; })[0];
-        if (queueId === undefined) {
-            console.warn('Queue not found in Glia for button: ' + buttonQueueName);
-            return;
-        }
-        mediaButton.addEventListener('click', function() {
-            salemove
-            .queueForEngagement(buttonMedium, { queueId: queueId })
-            .catch(function(err) { console.error('Failed to queue:', err); });
-        });
-        });
-    }
-    function onQueueState(queue) {
-        if (findQueueElement(queue.name) === null) return;
-        if (queue.state.status === queue.state.STATUSES.OPEN) {
-        showCanQueue(findQueueElement(queue.name), queue.state.medias);
-        } else {
-        showCannotQueue(findQueueElement(queue.name));
-        }
-    }
-    function onVisitorQueueingState(queuingState) {
-        if (queuingState.state === queuingState.QUEUE_STATES.QUEUED) {
-        queueTicket = queuingState.ticket;
-        console.log('Visitor is queued. Ticket:', queueTicket);
-        } else if (queuingState.state === queuingState.QUEUE_STATES.CANNOT_QUEUE) {
-        queueTicket = null;
-        } else {
-        queueTicket = null;
-        }
-    }
-    // Initial state: disable all buttons until queue state is known
-    showCannotQueueAnywhere();
-    sm.getApi({ version: 'v1' }).then(function(salemove) {
-        salemove.addEventListener(
-        salemove.EVENTS.QUEUE_STATE_UPDATE,
-        onVisitorQueueingState
-        );
-        salemove.getQueues().then(function(queues) {
-        listenForQueueButtonClicks(salemove, queues);
-        var queueIds = queues.map(function(queue) { return queue.id; });
-        salemove.subscribeToQueueStateUpdates(queueIds, onQueueState);
-        });
-    });
     </script>
+</body>
 </html>
