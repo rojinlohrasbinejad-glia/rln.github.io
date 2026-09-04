@@ -2,7 +2,7 @@
 <html>
 <head>
     <!-- 1. CORRECTED: Script loads from api.glia.com and includes site_id query parameter -->
-    <script async src="https://api.glia.com/salemove_integration.js"></script>
+    <script async src="https://api.glia.com/salemove_integration.js?site_id=0ca7b220-b036-43d9-8c38-4f90ceedb2ff"></script>
     <title>Main Page - CE Testing Site</title>
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
     <style>
@@ -82,12 +82,12 @@
     <center>
         <div>
             <!-- Queue Cards -->
-            <div class="queue" queue_name="Sales">
+            <div id ="sales_queue" class="queue" queue_name="Sales">
                 <span>Interested in buying? (Sales)</span>
                 <button class="media_button" medium="text" disabled>Chat</button>
                 <button class="media_button" medium="audio" disabled>Speak</button>
             </div>
-            <div class="queue" queue_name="Service">
+            <div id ="service_queue" class="queue" queue_name="Service">
                 <span>Need help with the product? (Service)</span>
                 <button class="media_button" medium="text" disabled>Chat</button>
             </div>
