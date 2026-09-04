@@ -1,255 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CE Testing Site | Support</title>
-    
-    <!-- Load the Glia JS SDK -->
-    <script async src="https://api.glia.com/salemove_integration.js"></script>
-    
+    <script async src="https://api.beta.glia.com/salemove_integration.js"></script>
+    <title>Main Page - CE Testing Site</title>
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
     <style>
-        /* Modern UI Resets and Typography */
-        :root {
-            --primary: #7C19DD;
-            --primary-hover: #5B10A7;
-            --text-dark: #333333;
-            --text-light: #666666;
-            --bg-color: #F8F9FA;
-            --white: #FFFFFF;
-        }
-
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-dark);
-            line-height: 1.6;
-        }
-
-        /* Navigation */
-        nav {
-            background-color: var(--white);
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        nav a {
-            margin: 0 15px;
-            text-decoration: none;
-            color: var(--text-light);
-            font-weight: 500;
-            transition: color 0.2s ease;
-        }
-
-        nav a:hover {
-            color: var(--primary);
-        }
-
-        /* Hero Section */
-        .hero {
-            text-align: center;
-            padding: 60px 20px 40px;
-        }
-
-        .hero h1 {
-            color: var(--primary);
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-
-        .hero p {
-            color: var(--text-light);
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* Support Section & Cards */
-        .support-container {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            padding: 20px;
-            flex-wrap: wrap;
-        }
-
-        .support-card {
-            background: var(--white);
-            border-radius: 12px;
-            padding: 30px;
-            width: 300px;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .support-card h3 {
-            margin-top: 0;
-            color: var(--text-dark);
-        }
-
-        .support-card p {
-            color: var(--text-light);
-            font-size: 0.9rem;
-            margin-bottom: 25px;
-        }
-
-        /* Queue Buttons */
-        .queue-btn {
-            background-color: var(--primary);
-            color: var(--white);
-            padding: 12px 24px;
+        h1 {color:#7C19DD; font-family:roboto;}
+        img {width:50%;}
+        nav {text-align:center; margin: 20px 0; font-family: roboto, sans-serif;}
+        nav a {margin: 0 10px; text-decoration: none; color: #333;}
+        nav a:hover {color: #7C19DD;}
+        
+        /* New styling for the custom bubble */
+        .bubble {
+            background-color: red;
+            color: #FFFFFF;
+            padding: 10px 20px;
             border-radius: 8px;
             border: none;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            width: 100%;
-        }
-
-        .queue-btn svg {
-            margin-right: 10px;
-            fill: var(--white);
-            width: 20px;
-            height: 20px;
-        }
-
-        .queue-btn:hover:not(:disabled) {
-            background-color: var(--primary-hover);
-            transform: translateY(-2px);
-        }
-
-        /* Offline/Disabled State */
-        .queue-btn:disabled {
-            background-color: #E0E0E0;
-            color: #9E9E9E;
-            cursor: not-allowed;
+            font-family: roboto, sans-serif;
+            font-size: 16px;
+            cursor: pointer;
         }
         
-        .queue-btn:disabled svg {
-            fill: #9E9E9E;
+        .bubble svg {
+            margin-right: 8px;
+            fill: #FFFFFF;
+            width: 20px;
+            height: 20px;
         }
     </style>
 </head>
 <body>
-
     <nav>
-        <a href="index.html">Home</a>
-        <a href="page1.html">Services</a>
-        <a href="page2.html">About</a>
+        <a href="index.html">Main Page</a> | 
+        <a href="page1.html">Page 1</a> | 
+        <a href="page2.html">Page 2</a>
     </nav>
+    <center>
+        <img class="abc" src="images/Full LOGO_black.png" alt="CE logo" style="width:750px">
+        <br><br>
+        
+        <!-- Updated Chat Bubble Element -->
+        <button id="bubble" class="bubble" type="button">
+            <!-- SVG Chat Icon -->
+            <svg viewBox="0 0 24 24">
+                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"></path>
+            </svg>
+            Chat
+        </button>
 
-    <div class="hero">
-        <h1>How can we help you today?</h1>
-        <p>Select one of the options below to connect with our intelligent Virtual Assistants immediately.</p>
-    </div>
-
-    <div class="support-container">
-        <!-- Chat Support Card -->
-        <div class="support-card">
-            <div>
-                <h3>Digital Chat</h3>
-                <p>Chat instantly with our AI assistant for quick answers to your questions.</p>
-            </div>
-            <button id="chat-btn" class="queue-btn" disabled>
-                <svg viewBox="0 0 24 24">
-                    <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"></path>
-                </svg>
-                <span>Chat Offline</span>
-            </button>
-        </div>
-
-        <!-- Phone Support Card -->
-        <div class="support-card">
-            <div>
-                <h3>Voice Call</h3>
-                <p>Speak directly with our conversational AI over high-quality audio.</p>
-            </div>
-            <button id="phone-btn" class="queue-btn" disabled>
-                <svg viewBox="0 0 24 24">
-                    <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 00-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"></path>
-                </svg>
-                <span>Phone Offline</span>
-            </button>
-        </div>
-    </div>
-
-    <!-- Glia SDK Integration Logic -->
-    <script>
-        // Define exact queue names from Glia Hub
-        const CHAT_QUEUE_NAME = "gva-q";
-        const PHONE_QUEUE_NAME = "phone-gva-q";
-
-        let chatQueueId = null;
-        let phoneQueueId = null;
-
-        const chatButton = document.getElementById('chat-btn');
-        const phoneButton = document.getElementById('phone-btn');
-
-        // Helper function to update button UI
-        function updateButton(button, label, isOpen) {
-            button.disabled = !isOpen;
-            const span = button.querySelector('span');
-            if (span) {
-                span.textContent = isOpen ? label : `${label} (Offline)`;
-            }
-        }
-
-        // Initialize Glia SDK
-        sm.getApi({ version: 'v1' }).then(function(glia) {
-            console.log("Glia SDK ready.");
-
-            // 1. Fetch queues and subscribe to status updates
-            glia.getQueues().then(function(queues) {
-                
-                const chatQueue = queues.find(q => q.name === CHAT_QUEUE_NAME);
-                const phoneQueue = queues.find(q => q.name === PHONE_QUEUE_NAME);
-
-                if (chatQueue) {
-                    chatQueueId = chatQueue.id;
-                    glia.subscribeToQueueStateUpdates([chatQueueId], function(q) {
-                        const isOpen = q.state.status === q.state.STATUSES.OPEN;
-                        updateButton(chatButton, 'Start Chat', isOpen);
-                    });
-                } else {
-                    console.error("Queue not found: " + CHAT_QUEUE_NAME);
-                }
-
-                if (phoneQueue) {
-                    phoneQueueId = phoneQueue.id;
-                    glia.subscribeToQueueStateUpdates([phoneQueueId], function(q) {
-                        const isOpen = q.state.status === q.state.STATUSES.OPEN;
-                        updateButton(phoneButton, 'Start Call', isOpen);
-                    });
-                } else {
-                    console.error("Queue not found: " + PHONE_QUEUE_NAME);
-                }
-
-            }).catch(err => console.error("Error fetching queues:", err));
-
-            // 2. Click Handlers to trigger engagements
-            chatButton.addEventListener('click', function() {
-                if (chatQueueId) {
-                    glia.queueForEngagement('text', { queueId: chatQueueId })
-                        .catch(err => alert("Could not start chat: " + err));
-                }
-            });
-
-            phoneButton.addEventListener('click', function() {
-                if (phoneQueueId) {
-                    glia.queueForEngagement('audio', { queueId: phoneQueueId })
-                        .catch(err => alert("Could not start call: " + err));
-                }
-            });
-        });
-    </script>
+        <button class="media_button" medium="voice" id="voice">Voice</button>
+        <button class="media_button" medium="video" id="video"> video call </button>
+    </center>
+    <h1 id="glia-test-title">glia test</h1>
+    <h1 style="text-align:center;">Welcome to our main testing site!</h1>
 </body>
 </html>
