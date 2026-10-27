@@ -153,7 +153,14 @@
         }).catch(err => {
             console.error("Glia SDK failed to initialize:", err);
         });
-        sm.getApi({version:'1'}).then(function(api) {api.setLocale('es-MX');});
+
+        sm.getApi({ version: 'v1' }).then(function(glia) {
+        glia.setLocale('testlocale');
+    
+        // Keep your existing getQueues() and button logic here.
+        }).catch(function(err) {
+            console.error('Glia initialization or locale selection failed:', err);
+        });
     </script>
 </body>
 </html>
