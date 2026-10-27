@@ -153,6 +153,7 @@
         }).catch(err => {
             console.error("Glia SDK failed to initialize:", err);
         });
+        sm.getApi({version:'1'}).then(function(api) {api.setLocale('es-MX');});
     </script>
 </body>
 </html>
